@@ -3,6 +3,7 @@ package com.darkblade12.paintwar.sign;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -69,8 +70,9 @@ public class ArenaSign {
 			remove(true);
 			return;
 		}
-		if (!s.getLine(0).equals(HEADER))
-			s.setLine(0, HEADER);
+		String headerLine = ChatColor.translateAlternateColorCodes('&', HEADER);
+		if (!s.getLine(0).equals(headerLine))
+			s.setLine(0, headerLine);
 		for (int i = 0; i < 4; i++) {
 			int position = placeholderPositions[i];
 			if (position == 0)
@@ -101,7 +103,7 @@ public class ArenaSign {
 			} else {
 				text = "&8" + a.getMode().getName();
 			}
-			s.setLine(position, text);
+			s.setLine(position, ChatColor.translateAlternateColorCodes('&', text));
 		}
 		s.update();
 		update();
@@ -109,14 +111,14 @@ public class ArenaSign {
 
 	private String scrollFurther(String text) {
 		if (text.length() < 14) {
-			return "&e" + text;
+			return ChatColor.translateAlternateColorCodes('&', "&e" + text);
 		}
 		int e = textPosition + 14;
 		String f = "&e" + (e > text.length() ? text.substring(textPosition, text.length()) + text.substring(0, 14 - (text.length() - textPosition)) : text.substring(textPosition, e));
 		textPosition++;
 		if (textPosition == text.length())
 			textPosition = 0;
-		return f;
+		return ChatColor.translateAlternateColorCodes('&', f);
 	}
 
 	public void update() {

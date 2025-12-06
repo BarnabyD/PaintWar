@@ -48,8 +48,8 @@ public class PaintWar extends JavaPlugin {
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
-		help = new HelpPageManager(this, message.help_page_header(getPluginMeta().getVersion()), "&8[&bPage <current_page> &7of &6&l<page_amount>&8]",
-				"<random_color>\u2756 &6&o/<command> &r\u268A &2<description>\n&r  &d\u2756 &5&oExecutable as Console: <console_check>\n&r  &7\u2756 &8&oPermission: &7<permission>", 5);
+		help = new HelpPageManager(this, message.help_page_header(getPluginMeta().getVersion()) + "\n", "&8[&bPage <current_page> &7of &6&l<page_amount>&8]",
+				"<random_color>\u2756 &6&o/<command> &r\u268A &2<description>\n&r  &d\u2756 &5&oExecutable as Console: <console_check>\n&r  &7\u2756 &8&oPermission: &7<permission>", 10);
 		checkForVault();
 		new PaintWarCE(this);
 		l.info("Game system has been successfully enabled!");

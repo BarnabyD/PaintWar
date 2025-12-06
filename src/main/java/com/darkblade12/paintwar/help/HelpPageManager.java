@@ -10,6 +10,8 @@ import com.darkblade12.paintwar.PaintWar;
 import com.darkblade12.paintwar.manager.Manager;
 import com.darkblade12.paintwar.util.ColorCodeUtil;
 
+import net.kyori.adventure.text.Component;
+
 public class HelpPageManager extends Manager {
 	public final static String MASTER_PERMISSION = "PaintWar.*";
 	public final static String BONUS_PERMISSION = "PaintWar.bonus";
@@ -63,15 +65,27 @@ public class HelpPageManager extends Manager {
 
 	public void displayHelpPage(CommandSender s, int page) {
 		List<CommandDetails> visibleCommands = getVisibleCommands(s);
-		String helpPage = "";
+		Component helpPage = Component.empty();
+		
 		for (int i = (page - 1) * commandsPerPage; i <= page * commandsPerPage - 1; i++) {
 			if (i > visibleCommands.size() - 1)
 				break;
-			helpPage += "\n&r" + visibleCommands.get(i).getHelpPageString(commandDetailsLabel);
+			
+			if (i > (page - 1) * commandsPerPage) {
+				helpPage = helpPage.append(Component.newline());
+			}
+			helpPage = helpPage.append(visibleCommands.get(i).getHelpPageComponent(commandDetailsLabel));
 		}
+		
 		int pages = getHelpPageAmount(s);
-		ColorCodeUtil.sendColoredMessage(s, (pageHeader == null ? "" : pageHeader.replace("<version>", plugin.getPluginMeta().getVersion())) + helpPage
-				+ (pageFooter == null ? "" : "\n&r" + pageFooter.replace("<current_page>", (page == pages ? "&6&l" : "&a&l") + page).replace("<page_amount>", pages + "")));
+		String header = pageHeader == null ? "" : pageHeader.replace("<version>", plugin.getPluginMeta().getVersion());
+		String footer = pageFooter == null ? "" : "\n&r" + pageFooter.replace("<current_page>", (page == pages ? "&6&l" : "&a&l") + page).replace("<page_amount>", pages + "");
+		
+		Component headerComponent = ColorCodeUtil.fromLegacyString(header);
+		Component footerComponent = ColorCodeUtil.fromLegacyString(footer);
+		
+		Component finalMessage = headerComponent.append(helpPage).append(footerComponent);
+		s.sendMessage(finalMessage);
 	}
 
 	public List<CommandDetails> getVisibleCommands(CommandSender s) {

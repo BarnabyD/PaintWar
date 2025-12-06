@@ -7,6 +7,9 @@ import com.darkblade12.paintwar.PaintWar;
 import com.darkblade12.paintwar.message.MessageManager;
 import com.darkblade12.paintwar.util.ColorCodeUtil;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
+
 public class CommandDetails {
 	private String command;
 	private boolean executableAsConsole;
@@ -38,6 +41,24 @@ public class CommandDetails {
 		return "&cInvalid usage!\n&6/" + command;
 	}
 
+	public Component getHelpPageComponent(String label) {
+		String consoleCheck = executableAsConsole ? MessageManager.check : MessageManager.missing;
+		
+		// Create hover tooltip containing all details (description, console check, permission)
+		String hoverText = "&e" + description + 
+						"\n&r\n&d⭘ &5&oExecutable as Console: " + consoleCheck + 
+						"\n&r&7⭘ &8&oPermission: &7" + permission;
+		Component hoverComponent = ColorCodeUtil.fromLegacyString(hoverText);
+		
+		// Create main command display - just the syntax
+		String mainText = "&6&o/" + command;
+		
+		Component component = ColorCodeUtil.fromLegacyString(mainText)
+			.hoverEvent(HoverEvent.showText(hoverComponent));
+		
+		return component;
+	}
+	
 	public String getHelpPageString(String label) {
 		return label.replace("<random_color>", MessageManager.randomColorCode()).replace("<command>", command).replace("<console_check>", executableAsConsole ? MessageManager.check : MessageManager.missing)
 				.replace("<description>", description).replace("<permission>", permission);

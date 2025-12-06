@@ -147,7 +147,7 @@ public class SignManager extends SingleTaskManager implements Listener {
 		String[] lines = event.getLines();
 		if (!lines[0].equalsIgnoreCase("[PaintWar]") && !lines[0].equalsIgnoreCase("PaintWar"))
 			return;
-		event.setLine(0, ArenaSign.HEADER);
+		event.setLine(0, ChatColor.translateAlternateColorCodes('&', ArenaSign.HEADER));
 		final Block b = event.getBlock();
 		if (!p.hasPermission("PaintWar.sign.create") && !p.hasPermission("PaintWar.*") && !p.hasPermission("PaintWar.sign.*")) {
 			b.breakNaturally();
@@ -163,11 +163,12 @@ public class SignManager extends SingleTaskManager implements Listener {
 				event.setLine(i, ChatColor.translateAlternateColorCodes('&', line.replace("#", "")));
 				continue;
 			}
-			if (a == null) {
-				a = plugin.arena.getArena(line);
-				if (a != null) {
-					String name = "&6" + a.getName();
-					event.setLine(i, name.length() > 16 ? name.substring(0, 16) : name);
+		if (a == null) {
+			a = plugin.arena.getArena(line);
+			if (a != null) {
+				String name = "&6" + a.getName();
+				name = ChatColor.translateAlternateColorCodes('&', name);
+				event.setLine(i, name.length() > 16 ? name.substring(0, 16) : name);
 				}
 			} else {
 				event.setLine(i, "");
