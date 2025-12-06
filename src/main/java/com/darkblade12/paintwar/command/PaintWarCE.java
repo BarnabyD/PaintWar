@@ -18,6 +18,9 @@ import com.darkblade12.paintwar.sign.ArenaSign;
 import com.darkblade12.paintwar.stats.Stat;
 import com.darkblade12.paintwar.util.ColorCodeUtil;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
+
 public class PaintWarCE implements CommandExecutor {
 	private PaintWar plugin;
 	private CommandDetails help;
@@ -311,6 +314,54 @@ public class PaintWarCE implements CommandExecutor {
 				return true;
 			}
 			ColorCodeUtil.sendColoredMessage(sender, plugin.message.top_ten(s));
+		} else if (sub.equals("powerups")) {
+			if (args.length == 1) {
+				// Show all powerups with hover tooltips
+				if (sender instanceof Player) {
+					Player player = (Player) sender;
+					Component message = Component.empty();
+					message = message.append(ColorCodeUtil.fromLegacyString("&6&l=== PaintWar Powerups ===\n"));
+					message = message.append(ColorCodeUtil.fromLegacyString("&7Hover over powerups for details\n\n"));
+					
+					int count = 0;
+					for (com.darkblade12.paintwar.arena.powerup.Powerup pow : com.darkblade12.paintwar.arena.powerup.Powerup.values()) {
+						if (count > 0) {
+							message = message.append(Component.newline());
+						}
+						
+						String displayText = "&e• &f" + pow.getName();
+						String description = getPowerupDescription(pow);
+						Component hover = ColorCodeUtil.fromLegacyString(description);
+						
+						Component powerupComponent = ColorCodeUtil.fromLegacyString(displayText)
+							.hoverEvent(HoverEvent.showText(hover));
+						
+						message = message.append(powerupComponent);
+						count++;
+					}
+					player.sendMessage(message);
+				} else {
+					// Console doesn't support hover events
+					StringBuilder sb = new StringBuilder();
+					sb.append("&6&l=== PaintWar Powerups ===\n");
+					for (com.darkblade12.paintwar.arena.powerup.Powerup pow : com.darkblade12.paintwar.arena.powerup.Powerup.values()) {
+						sb.append("&e• &f").append(pow.getName()).append("\n");
+					}
+					ColorCodeUtil.sendColoredMessage(sender, sb.toString());
+				}
+			} else {
+				// Show specific powerup info
+				com.darkblade12.paintwar.arena.powerup.Powerup pow = com.darkblade12.paintwar.arena.powerup.Powerup.fromName(args[1]);
+				if (pow == null) {
+					ColorCodeUtil.sendColoredMessage(sender, "&cPowerup not found!");
+					return true;
+				}
+				String description = getPowerupDescription(pow);
+				StringBuilder sb = new StringBuilder();
+				sb.append("&6&l=== ").append(pow.getName()).append(" ===\n");
+				sb.append(description);
+				ColorCodeUtil.sendColoredMessage(sender, sb.toString());
+			}
 		} else if (sub.equals("signs")) {
 			ColorCodeUtil.sendColoredMessage(sender, plugin.message.sign_list());
 		} else if (sub.equals("tp")) {
@@ -350,6 +401,47 @@ public class PaintWarCE implements CommandExecutor {
 			plugin.help.displayHelpPage(sender, page);
 		}
 		return true;
+	}
+
+	private String getPowerupDescription(com.darkblade12.paintwar.arena.powerup.Powerup pow) {
+		switch (pow.getName()) {
+			case "Big_Brush":
+				return "&7Temporarily increases your brush size to paint larger areas.";
+			case "Tiny_Brush":
+				return "&7Shrinks all opponents' brush sizes, making it harder for them to paint.";
+			case "Empty_Paint":
+				return "&7Makes all opponents' paint disappear when they place it, wasting their effort.";
+			case "Speed":
+				return "&7Grants you a temporary speed boost to move faster around the arena.";
+			case "Freeze":
+				return "&7Freezes all opponents in place, blocking their movement.";
+			case "Big_Blob":
+				return "&7Paints a large circular area around you instantly.";
+			case "Tiny_Blobs":
+				return "&7Paints multiple small circles scattered around the map.";
+			case "Advanced_Darkness":
+				return "&7Blinds opponents while giving them night vision - disorienting effect.";
+			case "Drunken":
+				return "&7Makes opponents nauseous and disoriented for a period of time.";
+			case "Slowness":
+				return "&7Slows down all opponents, making them move at a snail's pace.";
+			case "Jumping":
+				return "&7Makes opponents jump uncontrollably, disrupting their gameplay.";
+			case "Color_Bombs":
+				return "&7Gives you snowballs that paint areas when thrown at the floor.";
+			case "Immortal_Color":
+				return "&7Your paint color becomes immune to being painted over by opponents.";
+			case "Eraser":
+				return "&7Temporarily turn into an eraser to remove opponent paint from the floor.";
+			case "Powerup_Magnet":
+				return "&7Automatically pulls nearby powerups toward you for easy collection.";
+			case "Dash":
+				return "&7Gives you multiple dash charges to move quickly around the arena.";
+			case "No_Borders":
+				return "&7Allows you to paint outside the normal arena boundaries temporarily.";
+			default:
+				return "&7Unknown powerup.";
+		}
 	}
 }
 

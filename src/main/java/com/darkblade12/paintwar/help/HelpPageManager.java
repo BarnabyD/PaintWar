@@ -42,7 +42,8 @@ public class HelpPageManager extends Manager {
 						"Let's you join a valid arena", "PaintWar.join"), new CommandDetails("pw leave", false, "Let's you leave the current arena", "PaintWar.leave"), new CommandDetails("pw start <arena>",
 						true, "Starts the game in a valid arena manually", "PaintWar.start"), new CommandDetails("pw stop <arena>", true, "Stops a game in an arena manually", "PaintWar.stop"), new CommandDetails("pw kick <player>",
 						true, "Kicks a player out of his joined arena", "PaintWar.kick"), new CommandDetails("pw stats [player]", true, "Shows the statistics of yourself or a specified player",
-						"PaintWar.stats"), new CommandDetails("pw top <won/lost/wl>", true, "Shows the top ten list for a specified category", "PaintWar.top"), new CommandDetails("pw signs", true,
+						"PaintWar.stats"), new CommandDetails("pw top <won/lost/wl>", true, "Shows the top ten list for a specified category", "PaintWar.top"), new CommandDetails("pw powerups [powerup]", true,
+						"Shows a list of all powerups or detailed info about a specific powerup", "None"), new CommandDetails("pw signs", true,
 						"Shows a list of all arena signs", "PaintWar.signs"), new CommandDetails("pw tp <id>", false, "Teleports you to a specified arena sign", "PaintWar.tp"), new CommandDetails(
 						"pw reload [config]", true, "Reloads the whole plugin/config", "PaintWar.reload"), new CommandDetails("pw help [page]", true, "Shows the first/a specified help page", "&4&lNone"));
 		return true;

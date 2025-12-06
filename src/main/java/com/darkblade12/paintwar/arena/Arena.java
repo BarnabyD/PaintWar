@@ -63,6 +63,7 @@ public class Arena extends MultipleTaskManager {
 	private List<String> players;
 	private State state;
 	private int counter;
+	private ScoreboardManager scoreboardManager;
 
 	public Arena(PaintWar plugin, String name) throws Exception {
 		super(plugin);
@@ -225,6 +226,7 @@ public class Arena extends MultipleTaskManager {
 			if (!editMode)
 				throw new Exception("Failed to load the protection area");
 		}
+		scoreboardManager = new ScoreboardManager(plugin, this);
 		initialize();
 	}
 
@@ -273,6 +275,21 @@ public class Arena extends MultipleTaskManager {
 			for (Player p : getPlayers())
 				if (!exceptedNames.contains(p.getName()))
 					p.sendMessage(component);
+		}
+	}
+
+	public void broadcastTitle(String title, String subtitle) {
+		net.kyori.adventure.text.Component titleComponent = plugin.message.toComponent(title);
+		net.kyori.adventure.text.Component subtitleComponent = plugin.message.toComponent(subtitle);
+		for (Player p : getPlayers()) {
+			p.showTitle(net.kyori.adventure.title.Title.title(titleComponent, subtitleComponent));
+		}
+	}
+
+	public void broadcastTitle(String title) {
+		net.kyori.adventure.text.Component titleComponent = plugin.message.toComponent(title);
+		for (Player p : getPlayers()) {
+			p.showTitle(net.kyori.adventure.title.Title.title(titleComponent, net.kyori.adventure.text.Component.empty()));
 		}
 	}
 
@@ -376,9 +393,56 @@ public class Arena extends MultipleTaskManager {
 			}
 		}, gameDuration * 20);
 		startMessageTasks();
+		startXPBarTimer();
+		startScoreboardUpdates();
 		cancelTask(getTask(0)); // cancel scheduler task (it's the first task created)
 		state = State.NOT_JOINABLE;
 		update();
+	}
+
+	private void startXPBarTimer() {
+		final long gameStartTime = System.currentTimeMillis();
+		final long gameDurationMs = gameDuration * 1000L;
+		
+		scheduleRepeatingTask(new Runnable() {
+			@Override
+			public void run() {
+				long elapsed = System.currentTimeMillis() - gameStartTime;
+				long remaining = gameDurationMs - elapsed;
+				
+				if (remaining <= 0) {
+					return; // Game will stop naturally
+				}
+				
+				// Calculate progress (0.0 to 1.0)
+				float progress = 1.0f - (float) remaining / gameDurationMs;
+				progress = Math.max(0.0f, Math.min(1.0f, progress)); // Clamp between 0 and 1
+				
+				// Calculate seconds remaining
+				int secondsRemaining = (int) (remaining / 1000);
+				
+				// Update XP bar for all players
+				for (Player p : getPlayers()) {
+					// Display remaining time in XP level
+					p.setLevel(secondsRemaining);
+					// Display progress bar in XP
+					p.setExp(progress);
+				}
+			}
+		}, 0, 2); // Update every tick (2 ticks = ~40ms for smoother updates)
+	}
+
+	private void startScoreboardUpdates() {
+		// Show scoreboard to all players
+		scoreboardManager.showToAll();
+		
+		// Update scoreboard every 10 ticks for performance
+		scheduleRepeatingTask(new Runnable() {
+			@Override
+			public void run() {
+				scoreboardManager.updateScoreboard();
+			}
+		}, 0, 10);
 	}
 
 	public void startCountdown() {
@@ -388,11 +452,11 @@ public class Arena extends MultipleTaskManager {
 			@Override
 			public void run() {
 				if (counter != 0) {
-					broadcastMessage(plugin.message.arena_countdown(counter));
+					broadcastTitle(plugin.message.arena_countdown(counter));
 					counter--;
 				} else {
 					startGame();
-					broadcastMessage(plugin.message.arena_countdown_go());
+					broadcastTitle(plugin.message.arena_countdown_go());
 				}
 			}
 		}, 0, 20);
@@ -417,11 +481,14 @@ public class Arena extends MultipleTaskManager {
 	public void stopGame(boolean forced) {
 		new GameEndEvent(this).call();
 		this.cancelTasks();
+		scoreboardManager.cleanup();
 		String winnerName = "None";
 		if (!forced) {
 			Player w = getWinner();
-			winnerName = w.getName();
-			new PlayerWinGameEvent(w, this, itemRewards, moneyRewardEnabled ? moneyAmount : 0.0D).call();
+			if (w != null) {
+				winnerName = w.getName();
+				new PlayerWinGameEvent(w, this, itemRewards, moneyRewardEnabled ? moneyAmount : 0.0D).call();
+			}
 		String msg = plugin.message.arena_player_won_game(winnerName, name);
 		if (plugin.setting.BROADCAST_PLAYER_WIN_GAME)
 			broadcastMessageToServer(msg);
