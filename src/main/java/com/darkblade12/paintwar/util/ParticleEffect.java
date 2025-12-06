@@ -1,7 +1,9 @@
 package com.darkblade12.paintwar.util;
 
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.Player;
 
 /**
@@ -56,24 +58,37 @@ public enum ParticleEffect {
 
 	public void play(Player p, Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
 		if (p != null && loc != null && loc.getWorld() != null) {
-			loc.getWorld().spawnParticle(particle, loc, amount, offsetX, offsetY, offsetZ, speed, null, true);
+			Object data = getParticleData();
+			loc.getWorld().spawnParticle(particle, loc, amount, offsetX, offsetY, offsetZ, speed, data, true);
 		}
 	}
 
 	public void play(Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
 		if (loc != null && loc.getWorld() != null) {
-			loc.getWorld().spawnParticle(particle, loc, amount, offsetX, offsetY, offsetZ, speed, null, false);
+			Object data = getParticleData();
+			loc.getWorld().spawnParticle(particle, loc, amount, offsetX, offsetY, offsetZ, speed, data, false);
 		}
 	}
 
 	public void play(Location loc, double range, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
 		if (loc != null && loc.getWorld() != null) {
+			Object data = getParticleData();
 			for (Player p : loc.getWorld().getPlayers()) {
 				if (p.getLocation().distance(loc) <= range) {
-					loc.getWorld().spawnParticle(particle, loc, amount, offsetX, offsetY, offsetZ, speed, null, true);
+					loc.getWorld().spawnParticle(particle, loc, amount, offsetX, offsetY, offsetZ, speed, data, true);
 				}
 			}
 		}
+	}
+	
+	private Object getParticleData() {
+		// Particles that require special data
+		if (particle == Particle.DUST) {
+			// RED_DUST requires DustOptions
+			return new DustOptions(org.bukkit.Color.RED, 1.0f);
+		}
+		// Other particles don't need data
+		return null;
 	}
 
 	public static void playTileCrack(Player p, Location loc, int id, byte data, float offsetX, float offsetY, float offsetZ, int amount) {

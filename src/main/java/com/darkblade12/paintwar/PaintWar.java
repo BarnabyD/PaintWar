@@ -15,6 +15,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 
 import com.darkblade12.paintwar.arena.ArenaManager;
 import com.darkblade12.paintwar.command.PaintWarCE;
+import com.darkblade12.paintwar.command.PaintWarTabCompleter;
 import com.darkblade12.paintwar.data.DataManager;
 import com.darkblade12.paintwar.help.HelpPageManager;
 import com.darkblade12.paintwar.message.MessageManager;
@@ -52,6 +53,7 @@ public class PaintWar extends JavaPlugin {
 				"<random_color>\u2756 &6&o/<command> &r\u268A &2<description>\n&r  &d\u2756 &5&oExecutable as Console: <console_check>\n&r  &7\u2756 &8&oPermission: &7<permission>", 10);
 		checkForVault();
 		new PaintWarCE(this);
+		new PaintWarTabCompleter(this);
 		l.info("Game system has been successfully enabled!");
 	}
 

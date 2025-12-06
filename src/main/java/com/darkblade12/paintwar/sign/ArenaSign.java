@@ -73,6 +73,12 @@ public class ArenaSign {
 		String headerLine = ChatColor.translateAlternateColorCodes('&', HEADER);
 		if (!s.getLine(0).equals(headerLine))
 			s.setLine(0, headerLine);
+		
+		// Ensure line 1 always has the arena name
+		String arenaNameLine = ChatColor.translateAlternateColorCodes('&', "&6" + arenaName);
+		if (!s.getLine(1).equals(arenaNameLine))
+			s.setLine(1, arenaNameLine);
+		
 		for (int i = 0; i < 4; i++) {
 			int position = placeholderPositions[i];
 			if (position == 0)
