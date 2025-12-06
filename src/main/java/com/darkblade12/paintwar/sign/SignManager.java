@@ -166,7 +166,7 @@ public class SignManager extends SingleTaskManager implements Listener {
 			if (a == null) {
 				a = plugin.arena.getArena(line);
 				if (a != null) {
-					String name = "�6" + a.getName();
+					String name = "&6" + a.getName();
 					event.setLine(i, name.length() > 16 ? name.substring(0, 16) : name);
 				}
 			} else {

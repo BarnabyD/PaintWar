@@ -85,7 +85,7 @@ public class MessageManager extends Manager implements MessageContainer {
 
 	public String getMessage(String id) {
 		if (!messages.containsKey(id))
-			return "�cMessage not available, please check your language file! �8(�7Message id: �6" + id + "�8)";
+			return "&cMessage not available, please check your language file! &8(&7Message id: &6" + id + "&8)";
 		return messages.get(id);
 	}
 
@@ -98,7 +98,7 @@ public class MessageManager extends Manager implements MessageContainer {
 	}
 
 	public static String randomColorCode() {
-		return "�" + colorCodeModifiers[RANDOM.nextInt(colorCodeModifiers.length)];
+		return "&" + colorCodeModifiers[RANDOM.nextInt(colorCodeModifiers.length)];
 	}
 
 	public static String getSymbol(int num) {
@@ -107,8 +107,8 @@ public class MessageManager extends Manager implements MessageContainer {
 
 	private String getChecklist(Arena a) {
 		int spawns = a.getSpawnAmount();
-		StringBuilder builder = new StringBuilder("\n �e\u2022 �6�lProtection: " + (a.getProtection() != null ? check : missing) + "\n �e\u2022 �6�lFloor: " + (a.getFloor() != null ? check : missing)
-				+ "\n �e\u2022 �6�lSpawns: " + (spawns > 1 ? check : missing) + " �8(�b" + spawns + (spawns > 1 ? "" : "�7, " + arena_too_x_spawns(false)) + "�8)");
+		StringBuilder builder = new StringBuilder("\n &e\u2022 &6&lProtection: " + (a.getProtection() != null ? check : missing) + "\n &e\u2022 &6&lFloor: " + (a.getFloor() != null ? check : missing)
+				+ "\n &e\u2022 &6&lSpawns: " + (spawns > 1 ? check : missing) + " &8(&b" + spawns + (spawns > 1 ? "" : "&7, " + arena_too_x_spawns(false)) + "&8)");
 		if (a.isReadyForUse())
 			builder.append("\n" + arena_x_for_use(true));
 		return builder.toString();
@@ -120,8 +120,8 @@ public class MessageManager extends Manager implements MessageContainer {
 		for (int i = 0; i < arenas.size(); i++) {
 			Arena a = arenas.get(i);
 			State s = a.getState();
-			builder.append("\n " + randomColorCode() + "\u276D\u276F\u2771 �7�o" + a.getName() + " �r\u268A "
-					+ (a.isSetup() ? (s == State.JOINABLE ? "�a" : s == State.COUNTING ? "�6" : "�4") + "�l" + getMessage("state_" + s.getName()) : "�4�lNot setup"));
+			builder.append("\n " + randomColorCode() + "\u276D\u276F\u2771 &7&o" + a.getName() + " &r\u268A "
+					+ (a.isSetup() ? (s == State.JOINABLE ? "&a" : s == State.COUNTING ? "&6" : "&4") + "&l" + getMessage("state_" + s.getName()) : "&4&lNot setup"));
 		}
 		return builder.toString();
 	}
@@ -129,13 +129,13 @@ public class MessageManager extends Manager implements MessageContainer {
 	private String playerListToString(Arena a) {
 		StringBuilder builder = new StringBuilder();
 		for (String name : a.getPlayerNames())
-			builder.append("\n �6\u25BB �e�o" + name);
-		return builder.length() == 0 ? "\n �6\u25BB �4�oNone" : builder.toString();
+			builder.append("\n &6\u25BB &e&o" + name);
+		return builder.length() == 0 ? "\n &6\u25BB &4&oNone" : builder.toString();
 	}
 
 	private String getStats(String name) {
-		return "\n�r �7\u27AB �e�l" + getMessage("category_won_games") + ": �6�l" + plugin.stats.get(name, Stat.WON_GAMES) + "\n�r �7\u27AB �c�l" + getMessage("category_lost_games") + ": �4�l"
-				+ plugin.stats.get(name, Stat.LOST_GAMES) + "\n�r �7\u27AB �8�l" + getMessage("category_wl_ratio") + ": �b�l" + plugin.stats.getRatio(name);
+		return "\n&r &7\u27AB &e&l" + getMessage("category_won_games") + ": &6&l" + plugin.stats.get(name, Stat.WON_GAMES) + "\n&r &7\u27AB &c&l" + getMessage("category_lost_games") + ": &4&l"
+				+ plugin.stats.get(name, Stat.LOST_GAMES) + "\n&r &7\u27AB &8&l" + getMessage("category_wl_ratio") + ": &b&l" + plugin.stats.getRatio(name);
 	}
 
 	private String getTop(Stat s) {
@@ -144,7 +144,7 @@ public class MessageManager extends Manager implements MessageContainer {
 		Map<Integer, String> top = plugin.stats.getTop(s);
 		for (int i = 1; i <= top.size(); i++) {
 			String name = top.get(i);
-			builder.append("\n�r " + getSymbol(i) + " �e�l" + name + ": �a�l");
+			builder.append("\n&r " + getSymbol(i) + " &e&l" + name + ": &a&l");
 			if (!wl)
 				builder.append(plugin.stats.get(name, s));
 			else
@@ -158,9 +158,9 @@ public class MessageManager extends Manager implements MessageContainer {
 		List<ArenaSign> signs = plugin.sign.getSigns();
 		for (int i = 0; i < signs.size(); i++) {
 			ArenaSign as = signs.get(i);
-			builder.append("\n �8\u25BB �c�o" + as.getId() + " �r\u268A �e�oArena: �6�o" + as.getArenaName());
+			builder.append("\n &8\u25BB &c&o" + as.getId() + " &r\u268A &e&oArena: &6&o" + as.getArenaName());
 		}
-		return builder.length() == 0 ? "\n �6\u25BB �4�oNone" : builder.toString();
+		return builder.length() == 0 ? "\n &6\u25BB &4&oNone" : builder.toString();
 	}
 
 	@Override
@@ -225,7 +225,7 @@ public class MessageManager extends Manager implements MessageContainer {
 
 	@Override
 	public String arena_toggle_edit_mode(String arena, boolean state) {
-		return getMessage("arena_toggle_edit_mode", true).replace("<arena>", arena).replace("<state>", state ? "�2" + getMessage("state_on") : "�4" + getMessage("state_off"));
+		return getMessage("arena_toggle_edit_mode", true).replace("<arena>", arena).replace("<state>", state ? "&2" + getMessage("state_on") : "&4" + getMessage("state_off"));
 	}
 
 	@Override
@@ -401,7 +401,7 @@ public class MessageManager extends Manager implements MessageContainer {
 				location.getX() + ", " + location.getY() + ", " + location.getZ());
 		if (plugin.data.isSelectionComplete(player))
 			try {
-				player_position_set += " �8(�e" + new Cuboid(plugin.data.getPosition(player, true), plugin.data.getPosition(player, false)).getVolume() + "�8)";
+				player_position_set += " &8(&e" + new Cuboid(plugin.data.getPosition(player, true), plugin.data.getPosition(player, false)).getVolume() + "&8)";
 			} catch (Exception e) {
 				// failed to initiate the {@Cuboid}, should not happen since it's checked before
 			}

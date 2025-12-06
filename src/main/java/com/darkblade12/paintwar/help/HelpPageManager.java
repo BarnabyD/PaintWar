@@ -42,7 +42,7 @@ public class HelpPageManager extends Manager {
 						true, "Kicks a player out of his joined arena", "PaintWar.kick"), new CommandDetails("pw stats [player]", true, "Shows the statistics of yourself or a specified player",
 						"PaintWar.stats"), new CommandDetails("pw top <won/lost/wl>", true, "Shows the top ten list for a specified category", "PaintWar.top"), new CommandDetails("pw signs", true,
 						"Shows a list of all arena signs", "PaintWar.signs"), new CommandDetails("pw tp <id>", false, "Teleports you to a specified arena sign", "PaintWar.tp"), new CommandDetails(
-						"pw reload [config]", true, "Reloads the whole plugin/config", "PaintWar.reload"), new CommandDetails("pw help [page]", true, "Shows the first/a specified help page", "�4�lNone"));
+						"pw reload [config]", true, "Reloads the whole plugin/config", "PaintWar.reload"), new CommandDetails("pw help [page]", true, "Shows the first/a specified help page", "&4&lNone"));
 		return true;
 	}
 
@@ -67,11 +67,11 @@ public class HelpPageManager extends Manager {
 		for (int i = (page - 1) * commandsPerPage; i <= page * commandsPerPage - 1; i++) {
 			if (i > visibleCommands.size() - 1)
 				break;
-			helpPage += "\n�r" + visibleCommands.get(i).getHelpPageString(commandDetailsLabel);
+			helpPage += "\n&r" + visibleCommands.get(i).getHelpPageString(commandDetailsLabel);
 		}
 		int pages = getHelpPageAmount(s);
 		ColorCodeUtil.sendColoredMessage(s, (pageHeader == null ? "" : pageHeader.replace("<version>", plugin.getPluginMeta().getVersion())) + helpPage
-				+ (pageFooter == null ? "" : "\n�r" + pageFooter.replace("<current_page>", (page == pages ? "�6�l" : "�a�l") + page).replace("<page_amount>", pages + "")));
+				+ (pageFooter == null ? "" : "\n&r" + pageFooter.replace("<current_page>", (page == pages ? "&6&l" : "&a&l") + page).replace("<page_amount>", pages + "")));
 	}
 
 	public List<CommandDetails> getVisibleCommands(CommandSender s) {

@@ -151,32 +151,46 @@ public class Arena extends MultipleTaskManager {
 		if (itemRewardsEnabled)
 			for (String item : config.getString("Reward_Settings.Item_Rewards.Items").split(", "))
 				try {
-					String[] s = item.split("-");
-					int id = Integer.parseInt(s[0]);
-					int amount = s.length >= 2 ? Integer.parseInt(s[1]) : 1;
-					// Note: durability is parsed but ignored in modern API
+					String[] s = item.split(":");
 					Material mat = null;
-					// Try to map legacy numeric IDs to material names
-					// This is a best-effort approach for common items
-					switch(id) {
-						case 1: mat = Material.STONE; break;
-						case 2: mat = Material.GRASS_BLOCK; break;
-						case 3: mat = Material.DIRT; break;
-						case 4: mat = Material.COBBLESTONE; break;
-						case 5: mat = Material.OAK_PLANKS; break;
-						case 256: mat = Material.DIAMOND_PICKAXE; break;
-						case 257: mat = Material.DIAMOND_SHOVEL; break;
-						case 258: mat = Material.DIAMOND_AXE; break;
-						default: {
-							plugin.l.warning("Legacy item ID " + id + " could not be converted. Please update config to use item names.");
-							mat = Material.DIAMOND;
-							break;
+					int amount = 1;
+					
+					// Try to parse as material name first (modern format)
+					try {
+						mat = Material.valueOf(s[0].toUpperCase());
+					} catch (IllegalArgumentException e) {
+						// Fall back to numeric ID parsing for legacy support
+						try {
+							int id = Integer.parseInt(s[0]);
+							// Legacy numeric ID mapping
+							switch(id) {
+								case 1: mat = Material.STONE; break;
+								case 2: mat = Material.GRASS_BLOCK; break;
+								case 3: mat = Material.DIRT; break;
+								case 4: mat = Material.COBBLESTONE; break;
+								case 5: mat = Material.OAK_PLANKS; break;
+								case 256: mat = Material.DIAMOND_PICKAXE; break;
+								case 257: mat = Material.DIAMOND_SHOVEL; break;
+								case 258: mat = Material.DIAMOND_AXE; break;
+								default: {
+									plugin.l.warning("Legacy item ID " + id + " could not be converted. Please update config to use item names.");
+									mat = Material.DIAMOND;
+									break;
+								}
+							}
+						} catch (NumberFormatException ex) {
+							throw new Exception("Invalid item format '" + s[0] + "' found in the list 'Items'");
 						}
 					}
+					
+					// Parse amount if provided
+					if (s.length >= 2)
+						amount = Integer.parseInt(s[1]);
+					
 					if (mat == null)
-						throw new Exception("Invalid item id '" + id + "' found in the list 'Items'");
+						throw new Exception("Invalid material '" + s[0] + "' found in the list 'Items'");
+					
 					ItemStack stack = new ItemStack(mat, amount);
-					// Note: durability parameter ignored - not supported in modern API
 					itemRewards.add(stack);
 				} catch (Exception e) {
 					throw new Exception("Invalid item format '" + item + "' found in the list 'Items'");
@@ -516,7 +530,7 @@ public class Arena extends MultipleTaskManager {
 		int blocks = floor.getVolume();
 		for (Entry<String, Integer> e : pointMap.entrySet()) {
 			String name = e.getKey();
-			builder.append("\n�r " + MessageManager.coloredArrow() + " " + (name.equals(winnerName) ? "�e" : "�6") + "�l" + name + ": �8�l" + getPercentage(e.getValue(), blocks) + "%");
+			builder.append("\n&r " + MessageManager.coloredArrow() + " " + (name.equals(winnerName) ? "&e" : "&6") + "&l" + name + ": &8&l" + getPercentage(e.getValue(), blocks) + "%");
 		}
 		broadcastMessage(plugin.message.arena_game_overview(name, builder.toString()));
 		return Bukkit.getPlayerExact(winnerName);
@@ -530,7 +544,7 @@ public class Arena extends MultipleTaskManager {
 	public String getPlayerDisplay() {
 		int spawns = this.spawns.size();
 		int players = this.players.size();
-		return "�8{" + (spawns == players ? "�6" : players == 0 ? "�4" : "�a") + players + "�8/�6" + spawns + "�8}";
+		return "&8{" + (spawns == players ? "&6" : players == 0 ? "&4" : "&a") + players + "&8/&6" + spawns + "&8}";
 	}
 
 	private List<String> getFreeSpawns() {

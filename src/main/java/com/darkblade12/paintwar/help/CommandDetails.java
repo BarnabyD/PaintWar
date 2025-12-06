@@ -35,7 +35,7 @@ public class CommandDetails {
 	}
 
 	public String getInvalidUsageString() {
-		return "�cInvalid usage!\n�6/" + command;
+		return "&cInvalid usage!\n&6/" + command;
 	}
 
 	public String getHelpPageString(String label) {

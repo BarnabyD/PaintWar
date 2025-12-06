@@ -76,7 +76,7 @@ Powerup_Settings:
 Reward_Settings:
  Item_Rewards:
   Enabled: true
-  Items: DIAMOND-10, STICK-2, INK_SAC-10-4
+  Items: DIAMOND:10, STICK:2, INK_SAC:10
  Money_Reward:
   Enabled: true
   Money_Amount: 500
