@@ -204,11 +204,38 @@ public class Floor extends Cuboid {
 			immortalColors.remove(color);
 	}
 
+	/**
+	 * Check if a block is decorative/non-solid and should not be painted
+	 */
+	private static boolean isDecorativeBlock(Material mat) {
+		String name = mat.name();
+		// Ignore stairs, slabs, buttons, pressure plates, switches, doors, trapdoors, fences
+		return name.endsWith("_STAIRS") || 
+		       name.endsWith("_SLAB") || 
+		       name.endsWith("_BUTTON") || 
+		       name.endsWith("_PRESSURE_PLATE") || 
+		       name.contains("BUTTON") ||
+		       name.contains("SWITCH") ||
+		       name.endsWith("_DOOR") || 
+		       name.endsWith("_TRAPDOOR") ||
+		       name.endsWith("_FENCE") ||
+		       name.endsWith("_FENCE_GATE") ||
+		       mat == Material.REDSTONE_WIRE ||
+		       mat == Material.REPEATER ||
+		       mat == Material.COMPARATOR ||
+		       mat == Material.LEVER ||
+		       mat == Material.TRIPWIRE ||
+		       mat == Material.TRIPWIRE_HOOK;
+	}
+
 	private boolean isIgnored(Block b) {
 		if (ignoredMaterials.contains(b.getType())) {
 			return true;
 		}
 		if (!isInside(b.getLocation())) {
+			return true;
+		}
+		if (isDecorativeBlock(b.getType())) {
 			return true;
 		}
 		if (isWoolMaterial(b.getType())) {
