@@ -1,0 +1,14 @@
+name: PaintWar
+version: 2.0.0
+author: DarkBlade12
+website: http://dev.bukkit.org/profiles/DarkBladee12
+api-version: 1.21.10
+softdepend: [Vault, Multiworld, MyWorlds, Multiverse-Core]
+
+main: com.darkblade12.paintwar.PaintWar
+
+commands:
+  pw:
+    description: General PaintWar command
+    usage: /<command> help
+    aliases: [paintwar, pwar]
