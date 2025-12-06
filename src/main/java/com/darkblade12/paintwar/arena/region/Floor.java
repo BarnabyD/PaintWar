@@ -129,7 +129,41 @@ public class Floor extends Cuboid {
 		if (plugin.data.hasEmptyPaint(p))
 			return;
 		Location loc = p.getLocation();
-		colorCircle(p, loc.getBlockX(), loc.getBlockY() - 1, loc.getBlockZ(), plugin.data.getBrushSize(p));
+		int brushSize = plugin.data.getBrushSize(p);
+		int centerX = loc.getBlockX();
+		int centerY = loc.getBlockY();
+		int centerZ = loc.getBlockZ();
+		
+		// Paint blocks in a 3D sphere around the player (head to feet level)
+		// This creates a more natural painting effect instead of just ground level
+		paintBlocksSphere(p, centerX, centerY, centerZ, brushSize);
+	}
+	
+	private void paintBlocksSphere(Player p, int centerX, int centerY, int centerZ, int radius) {
+		if (radius < 0)
+			return;
+		
+		PaintColor color = plugin.data.getPaintColor(p);
+		boolean eraser = plugin.data.isEraser(p);
+		World world = getWorld();
+		
+		int sqr = radius * radius;
+		
+		// Paint in 3D sphere around player (from centerY - radius to centerY + radius)
+		for (int x = centerX - radius; x <= centerX + radius; x++) {
+			for (int z = centerZ - radius; z <= centerZ + radius; z++) {
+				for (int y = centerY - radius; y <= centerY + radius; y++) {
+					// Check if block is within sphere radius
+					if ((centerX - x) * (centerX - x) + (centerZ - z) * (centerZ - z) + (centerY - y) * (centerY - y) <= sqr) {
+						Block b = world.getBlockAt(x, y, z);
+						if (eraser)
+							eraseColor(b);
+						else
+							colorBlock(b, color);
+					}
+				}
+			}
+		}
 	}
 
 	public void colorCircle(Player p, int cX, int cY, int cZ, int r) {
